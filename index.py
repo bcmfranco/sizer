@@ -14,7 +14,7 @@ native_camera = 1
 usb_camera = 0
 
 #Declaro la captura de imagen
-cap = cv2.VideoCapture(native_camera)
+cap = cv2.VideoCapture(usb_camera)
 
 while(True):
     _, frame = cap.read()
@@ -26,16 +26,19 @@ while(True):
     mask = cv2.inRange(hsv, lower_blue, upper_blue)
 
     contours,hierachy=cv2.findContours(mask,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-    print(contours)
+    # print(contours)
 
     for contour in contours:
-        cv2.drawContours(frame, contour, -1, (0, 255, 0), 3)
+        area = cv2.contourArea(contour)
+
+        if area > 1000:
+            cv2.drawContours(frame, contour, -1, (0, 0, 255), 3)
 
     cv2.imshow('frame',frame)
-    cv2.imshow('mask', mask)
+    # cv2.imshow('mask', mask)
 
     #Cerrar la cámara
-    if cv2.waitKey(1) & 0xFF == ord('q'): #La q produce un escape
+    if cv2.waitKey(1000) & 0xFF == ord('q'): #La q produce un escape
         break
         
 cap.release()
